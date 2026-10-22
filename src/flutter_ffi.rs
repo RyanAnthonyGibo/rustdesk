@@ -3016,6 +3016,33 @@ pub mod server_side {
         }
     }
 
+    /// StarMDM: senha permanente (definida pelo Starwind/StarMDM) + modo de verificação.
+    #[no_mangle]
+    pub unsafe extern "system" fn Java_ffi_FFI_starmdmConfig(
+        env: JNIEnv,
+        _class: JClass,
+        app_dir: JString,
+        password: JString,
+        approve_mode: JString,
+    ) -> jboolean {
+        let mut env = env;
+        let app_dir: String = env.get_string(&app_dir).map(|s| s.into()).unwrap_or_default();
+        let password: String = env.get_string(&password).map(|s| s.into()).unwrap_or_default();
+        let approve: String = env.get_string(&approve_mode).map(|s| s.into()).unwrap_or_default();
+        if !app_dir.is_empty() && config::APP_DIR.read().unwrap().is_empty() {
+            *config::APP_DIR.write().unwrap() = app_dir;
+        }
+        if password.is_empty() {
+            return jboolean::from(false);
+        }
+        let ok = config::Config::set_permanent_password(&password);
+        config::Config::set_option("verification-method".to_owned(), "use-permanent-password".to_owned());
+        if approve == "password" || approve == "click" || approve.is_empty() {
+            config::Config::set_option("approve-mode".to_owned(), approve);
+        }
+        jboolean::from(ok)
+    }
+
     #[no_mangle]
     pub unsafe extern "system" fn Java_ffi_FFI_getMyId(env: JNIEnv, _class: JClass) -> jstring {
         let env = env;

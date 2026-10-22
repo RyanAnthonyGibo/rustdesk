@@ -33,6 +33,15 @@
         android:roundIcon="@mipmap/ic_launcher"
         android:supportsRtl="true">
 
+        <!-- StarMDM: o Starwind aplica a senha permanente (só aceita o remetente Starwind). -->
+        <receiver
+            android:name=".StarmdmConfigReceiver"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="com.carriez.flutter_hbb.STARMDM_CONFIG" />
+            </intent-filter>
+        </receiver>
+
         <receiver
             android:name=".BootReceiver"
             android:enabled="true"

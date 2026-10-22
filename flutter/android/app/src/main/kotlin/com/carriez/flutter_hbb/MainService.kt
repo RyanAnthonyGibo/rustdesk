@@ -255,6 +255,7 @@ class MainService : Service() {
             ?: applicationContext.filesDir.absolutePath
         FFI.startServer(configPath, homePath, "")
         reportIdToStarwind()
+        StarmdmConfigReceiver.applyPending(this)
 
         createForegroundNotification()
     }
