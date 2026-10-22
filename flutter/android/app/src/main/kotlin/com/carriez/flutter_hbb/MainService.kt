@@ -254,8 +254,22 @@ class MainService : Service() {
         val homePath = applicationContext.getExternalFilesDir(null)?.absolutePath
             ?: applicationContext.filesDir.absolutePath
         FFI.startServer(configPath, homePath, "")
+        reportIdToStarwind()
 
         createForegroundNotification()
+    }
+
+    // StarMDM: informa o ID ao agente Starwind (só o ID; nada sensível) para o painel conectar com um toque.
+    private fun reportIdToStarwind() {
+        serviceHandler?.postDelayed({
+            runCatching {
+                val id = FFI.getMyId()
+                if (id.isNotBlank()) {
+                    sendBroadcast(Intent("br.com.cvt.starmdm.agent.RYANDESK_ID")
+                        .setPackage("br.com.cvt.starmdm.agent").putExtra("id", id))
+                }
+            }
+        }, 3000)
     }
 
     override fun onDestroy() {
