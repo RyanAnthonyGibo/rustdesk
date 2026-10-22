@@ -20,3 +20,7 @@ n3=s.count(old); s=s.replace(old,new)
 assert n1==1 and n2==1 and n3==1, (n1,n2,n3)
 open(f,"w").write(s); print("patch ok")
 PY
+# Nome visivel: RyanDesk (pacote e creditos/licenca AGPL inalterados)
+sed -i '0,/android:label="RustDesk"/s//android:label="RyanDesk"/; s/android:label="RustDesk Input"/android:label="RyanDesk Input"/' flutter/android/app/src/main/AndroidManifest.xml
+sed -i 's#<string name="app_name">RustDesk</string>#<string name="app_name">RyanDesk</string>#' flutter/android/app/src/main/res/values/strings.xml
+grep -q 'android:label="RyanDesk"' flutter/android/app/src/main/AndroidManifest.xml && echo "label ok"
